@@ -1,0 +1,9 @@
+**/__pycache__/
+.github
+.vscode
+tools
+material.zip
+.venv
+data/model.h5
+data/reviews.zip
+data/fit.json

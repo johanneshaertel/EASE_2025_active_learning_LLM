@@ -1,3 +1,7 @@
+echo "Running simulations..."
+
+cd /home/ubuntu/EASE_2025_active_learning_LLM
+
 for i in {1..20}
 do
     echo "Running simulation iteration $i"

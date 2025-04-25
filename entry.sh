@@ -14,10 +14,22 @@ sudo -u ubuntu git clone git@github.com:johanneshaertel/EASE_2025_active_learnin
 # Run installation make venv.
 sudo -u ubuntu bash -c "cd /home/ubuntu/EASE_2025_active_learning_LLM && make venv"
 
-# Start screen and run the simulation.
-sudo -u ubuntu screen -dmS s1 -p 0 -X stuff "bash /home/ubuntu/EASE_2025_active_learning_LLM/simulations.sh\n"
-sudo -u ubuntu screen -dmS s2 -p 0 -X stuff "bash /home/ubuntu/EASE_2025_active_learning_LLM/simulations.sh\n"
-sudo -u ubuntu screen -dmS s3 -p 0 -X stuff "bash /home/ubuntu/EASE_2025_active_learning_LLM/simulations.sh\n"
-sudo -u ubuntu screen -dmS s4 -p 0 -X stuff "bash /home/ubuntu/EASE_2025_active_learning_LLM/simulations.sh\n"
-sudo -u ubuntu screen -dmS s5 -p 0 -X stuff "bash /home/ubuntu/EASE_2025_active_learning_LLM/simulations.sh\n"
-sudo -u ubuntu screen -dmS s6 -p 0 -X stuff "bash /home/ubuntu/EASE_2025_active_learning_LLM/simulations.sh\n"
+# Start screen and run the simulation. You cann connnect using screen -r s...
+sudo -u ubuntu screen -dmS s1
+sudo -u ubuntu screen -S s1 -p 0 -X stuff "bash /home/ubuntu/EASE_2025_active_learning_LLM/simulations.sh\n"
+
+sudo -u ubuntu screen -dmS s2
+sudo -u ubuntu screen -S s2 -p 0 -X stuff "bash /home/ubuntu/EASE_2025_active_learning_LLM/simulations.sh\n"
+
+sudo -u ubuntu screen -dmS s3
+sudo -u ubuntu screen -S s3 -p 0 -X stuff "bash /home/ubuntu/EASE_2025_active_learning_LLM/simulations.sh\n"
+
+sudo -u ubuntu screen -dmS s4
+sudo -u ubuntu screen -S s4 -p 0 -X stuff "bash /home/ubuntu/EASE_2025_active_learning_LLM/simulations.sh\n"
+
+sudo -u ubuntu screen -dmS s5
+sudo -u ubuntu screen -S s5 -p 0 -X stuff "bash /home/ubuntu/EASE_2025_active_learning_LLM/simulations.sh\n"
+
+sudo -u ubuntu screen -dmS s6
+sudo -u ubuntu screen -S s6 -p 0 -X stuff "bash /home/ubuntu/EASE_2025_active_learning_LLM/simulations.sh\n"
+

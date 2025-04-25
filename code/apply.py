@@ -50,6 +50,10 @@ with zipfile.ZipFile(zip_name, 'r') as z:
                         buffer.append(obj)
                         total_reviews_processed += 1
 
+                        # TODO: Possible to filter for those with java path only.
+                        if not obj["path"].endswith("java"):
+                            continue
+
                         if len(buffer) > 64: # TODO: Can be increased if you have a good gpu.
                             llm_classifications(buffer)
                             # TODO: Add your specific candidate selection logic here. This is a dummy.

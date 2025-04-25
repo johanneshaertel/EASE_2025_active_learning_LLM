@@ -23,13 +23,3 @@ sudo -u ubuntu screen -S s2 -p 0 -X stuff "bash /home/ubuntu/EASE_2025_active_le
 
 sudo -u ubuntu screen -dmS s3
 sudo -u ubuntu screen -S s3 -p 0 -X stuff "bash /home/ubuntu/EASE_2025_active_learning_LLM/simulations.sh\n"
-
-sudo -u ubuntu screen -dmS s4
-sudo -u ubuntu screen -S s4 -p 0 -X stuff "bash /home/ubuntu/EASE_2025_active_learning_LLM/simulations.sh\n"
-
-sudo -u ubuntu screen -dmS s5
-sudo -u ubuntu screen -S s5 -p 0 -X stuff "bash /home/ubuntu/EASE_2025_active_learning_LLM/simulations.sh\n"
-
-sudo -u ubuntu screen -dmS s6
-sudo -u ubuntu screen -S s6 -p 0 -X stuff "bash /home/ubuntu/EASE_2025_active_learning_LLM/simulations.sh\n"
-

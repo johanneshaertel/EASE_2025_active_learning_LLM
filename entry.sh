@@ -18,8 +18,8 @@ sudo -u ubuntu bash -c "cd /home/ubuntu/EASE_2025_active_learning_LLM && make ve
 sudo -u ubuntu screen -dmS s1
 sudo -u ubuntu screen -S s1 -p 0 -X stuff "bash /home/ubuntu/EASE_2025_active_learning_LLM/simulations.sh\n"
 
-sudo -u ubuntu screen -dmS s2
-sudo -u ubuntu screen -S s2 -p 0 -X stuff "bash /home/ubuntu/EASE_2025_active_learning_LLM/simulations.sh\n"
+# sudo -u ubuntu screen -dmS s2
+# sudo -u ubuntu screen -S s2 -p 0 -X stuff "bash /home/ubuntu/EASE_2025_active_learning_LLM/simulations.sh\n"
 
-sudo -u ubuntu screen -dmS s3
-sudo -u ubuntu screen -S s3 -p 0 -X stuff "bash /home/ubuntu/EASE_2025_active_learning_LLM/simulations.sh\n"
+# sudo -u ubuntu screen -dmS s3
+# sudo -u ubuntu screen -S s3 -p 0 -X stuff "bash /home/ubuntu/EASE_2025_active_learning_LLM/simulations.sh\n"

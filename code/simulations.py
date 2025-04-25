@@ -141,7 +141,7 @@ for sampling in methods:
         loss_hist = model.fit(xs[observations], ys[observations], batch_size = 128, epochs = epochs, verbose=0)
 
         # IMPORTANT: This is the prediction of labels in R.
-        predict_before_soft = model.predict(xs_tf, batch_size = 1024, verbose = 0)
+        predict_before_soft = model.predict(xs_tf, batch_size = 2048, verbose = 0)
         ys_pred = tf.nn.softmax(predict_before_soft).numpy()
         
         full_dataset_loss = loss(ys_tf, predict_before_soft).numpy()

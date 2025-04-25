@@ -2,15 +2,27 @@ import tensorflow as tf
 import numpy as np
 import keras as keras
 import json
+import boto3
+import uuid
+
+# Limit GPU memory to run this more than once.
+gpus = tf.config.list_physical_devices('GPU')
+if gpus:
+  try:
+    tf.config.set_logical_device_configuration(gpus[0], [tf.config.LogicalDeviceConfiguration(memory_limit=256 * 4)])
+    logical_gpus = tf.config.list_logical_devices('GPU')
+    print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPUs")
+  except RuntimeError as e:
+    print(e)
 
 # Simulation.
-vars = 20 # np.random.choice([10, 30])
+vars = 20
 
 # Number of observations.
 n = 1000000
 
-# Ballance.
-ballance = 0.99 #np.random.choice([0.90, 0.99])
+# Balance.
+ballance = 0.99
 
 logit_stdev = np.random.choice([0.7, 1.0, 1.3])
 
@@ -22,16 +34,15 @@ epochs = np.random.choice([5, 10, 30])
 
 # Increment and iterations.
 options = [(200, 20), (40, 100)]
-increment, iterations = options[np.random.choice(range(len(options)))]
 
-# Bs_mean 
-bs_mean = np.random.choice([-0.1, 0])
+increment, iterations = options[np.random.choice(range(len(options)))]
 
 # Random network structure (LOL).
 st = [vars, 15, 15, 15, 1]
-ws = [tf.random.normal(shape=(st[i-1], st[i]), mean = 0, stddev = (2 / st[i-1])) for i in range(1, len(st))]
-bs = [tf.random.normal(shape=(st[i],), mean = bs_mean, stddev = 0.2) for i in range(1, len(st))] # THIS IS SUPER IMPORTANT set negative, oposite of regular initialization. First intuition war right.
-bs[-1] = tf.constant(0.0, shape=(1,)) # Set "intercept" to zero (which will be adjusted later).
+ws = [tf.random.normal(shape=(st[i-1], st[i]), mean=0, stddev=np.sqrt(2 / st[i-1])) for i in range(1, len(st))]
+bs = [tf.random.normal(shape=(st[i],        ), mean=0, stddev=1                   ) for i in range(1, len(st))]
+
+bs[-1] = tf.constant(0.0, shape=(1,))
 
 def forward(input):
     current = input
@@ -70,15 +81,20 @@ ys = ys.numpy()
 n_pos = sum(ys == 1)
 n_neg = sum(ys == 0)
 
+print("n_pos: " + str(n_pos))
+print("n_neg: " + str(n_neg))
+
 # Select random samples to start process with.
 initial_observations = np.random.choice(n, 200)
 
 # Method to be tested in randomize order.
+# "low"  = "majority"
+# "high" = "rare class"
 methods = ["random", "entropy", "high", "low"]
 np.random.shuffle(methods)
 
-# id is the hash of bs, ws and initial_observations
-id = str(hash(str(bs) + str(ws)))
+# use simpe random uuid to identify the simulation.
+id = str(uuid.uuid4())
 
 # Iterate over methods.
 for sampling in methods:
@@ -88,9 +104,9 @@ for sampling in methods:
     for iteration in range(0, iterations):
         print("iteration " + str(iteration) + " with " + str(len(observations)) + " (" + sampling + ")")
         
-        # Print postive fraction in obversations and in population.
-        # print("Positive fraction in observations: " + str(sum(ys[observations] == 1) / len(observations)))
-        # print("Positive fraction in population: " + str(sum(ys == 1) / n))
+        #Print postive fraction in obversations and in population.
+        print("Positive fraction in observations: " + str(sum(ys[observations] == 1) / len(observations)))
+        print("Positive fraction in population: " + str(sum(ys == 1) / n))
         
         record = dict()
         record["id"] = id
@@ -105,7 +121,6 @@ for sampling in methods:
         record["correlation"] = correlation
         record["logit_stdev"] = logit_stdev
         record["epochs"] = epochs
-        record["bs_mean"] = bs_mean
         
         model = keras.Sequential([
             keras.layers.Dense(15, activation='relu'),
@@ -120,20 +135,13 @@ for sampling in methods:
         model.compile(optimizer=opitimizer, loss=loss)
         loss_hist = model.fit(xs[observations], ys[observations], batch_size = 128, epochs = epochs, verbose=0)
 
-        # IMPORTANT: This is the prediction of lables in R.
-        ys_pred = tf.nn.softmax(model.predict(xs, batch_size = 1024, verbose = 0)).numpy()
+        # IMPORTANT: This is the prediction of labels in R.
+        predict_before_soft = model.predict(xs, batch_size = 1024, verbose = 0)
+        ys_pred = tf.nn.softmax(predict_before_soft).numpy()
+        
+        full_dataset_loss = loss(ys, predict_before_soft).numpy()
 
-        # TODO: There is an error in the recorded loss in the following comment, not relevant for the paper or the functionality of the methods.
-        # TODO: Just fix since results might be interesting.
-        # TODO: Error was related to lost computations needs data before softmax.
-        #     xs_test = xs[-observations]
-        #     ys_test = ys[-observations]
-
-        #     # ys_pred_test = tf.nn.softmax(model.predict(xs_test, batch_size = 1024, verbose = 0))
-        #     ys_pred_test = ys_pred[-observations]
-
-        #     # Categorical cross-entropy loss on full data.
-        #    loss_full_data = tf.reduce_mean(loss.call(ys_test, ys_pred_test)).numpy()
+        record["loss_full_dataset"] = float(full_dataset_loss)
 
         # Record some statistics on these observations.
         n_obs = len(observations)
@@ -144,8 +152,7 @@ for sampling in methods:
         # Print first and last loss.
         record["loss_fit_fst"] = loss_hist.history['loss'][0]
         record["loss_fit_lst"] = loss_hist.history['loss'][-1]
-        #record["loss_full_data"] = loss_full_data
-
+      
         already_observed = set(observations)
 
         if sampling == "random":
@@ -181,5 +188,14 @@ for sampling in methods:
         # Map record values to jsons serializable types.
         record = {k: str(v) for k, v in record.items()}
 
-        with open("results.json", 'a') as f:
+        with open(f"sim_{id}.json", 'a') as f:
             f.write(json.dumps(record) + "\n")
+
+
+# s3://vua-data/simulation2/
+aws_s3_bucket = "vua-data"
+aws_s3_path = "simulation2/"
+
+# Use boto to upload the file to S3.
+s3 = boto3.client('s3')
+s3.upload_file(f"sim_{id}.json", aws_s3_bucket, aws_s3_path + f"sim_{id}.json")

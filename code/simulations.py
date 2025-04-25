@@ -96,6 +96,11 @@ np.random.shuffle(methods)
 # use simpe random uuid to identify the simulation.
 id = str(uuid.uuid4())
 
+# turns into tf
+
+xs_tf = tf.constant(xs, dtype=tf.float32)
+ys_tf = tf.constant(ys, dtype=tf.float32)
+
 # Iterate over methods.
 for sampling in methods:
 
@@ -105,8 +110,8 @@ for sampling in methods:
         print("iteration " + str(iteration) + " with " + str(len(observations)) + " (" + sampling + ")")
         
         #Print postive fraction in obversations and in population.
-        print("Positive fraction in observations: " + str(sum(ys[observations] == 1) / len(observations)))
-        print("Positive fraction in population: " + str(sum(ys == 1) / n))
+        # print("Positive fraction in observations: " + str(sum(ys[observations] == 1) / len(observations)))
+        # print("Positive fraction in population: " + str(sum(ys == 1) / n))
         
         record = dict()
         record["id"] = id
@@ -136,10 +141,10 @@ for sampling in methods:
         loss_hist = model.fit(xs[observations], ys[observations], batch_size = 128, epochs = epochs, verbose=0)
 
         # IMPORTANT: This is the prediction of labels in R.
-        predict_before_soft = model.predict(xs, batch_size = 1024, verbose = 0)
+        predict_before_soft = model.predict(xs_tf, batch_size = 1024, verbose = 0)
         ys_pred = tf.nn.softmax(predict_before_soft).numpy()
         
-        full_dataset_loss = loss(ys, predict_before_soft).numpy()
+        full_dataset_loss = loss(ys_tf, predict_before_soft).numpy()
 
         record["loss_full_dataset"] = float(full_dataset_loss)
 

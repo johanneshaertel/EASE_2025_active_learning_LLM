@@ -25,7 +25,7 @@ They have been tested on WSL2 Ubuntu. We provide code for training the LLM, appl
 
 # The raw reviews (data/reviews.zip)
 
-Following is the metadata source pull request reviews we use as our dataset R.
+Following is the metadata for the pull request reviews we use as our unlabeled dataset R.
 
 | **Field**             | **Number of reviews with this field**  |
 |------------------------|------------|

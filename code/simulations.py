@@ -5,16 +5,6 @@ import json
 import boto3
 import uuid
 
-# # Limit GPU memory to run this more than once.
-# gpus = tf.config.list_physical_devices('GPU')
-# if gpus:
-#   try:
-#     tf.config.set_logical_device_configuration(gpus[0], [tf.config.LogicalDeviceConfiguration(memory_limit=256 * 12)])
-#     logical_gpus = tf.config.list_logical_devices('GPU')
-#     print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPUs")
-#   except RuntimeError as e:
-#     print(e)
-
 # Simulation.
 vars = 20
 
@@ -37,7 +27,7 @@ options = [(200, 20), (40, 100)]
 
 increment, iterations = options[np.random.choice(range(len(options)))]
 
-# Random network structure (LOL).
+# Random network structure.
 st = [vars, 15, 15, 15, 1]
 ws = [tf.random.normal(shape=(st[i-1], st[i]), mean=0, stddev=np.sqrt(2 / st[i-1])) for i in range(1, len(st))]
 bs = [tf.random.normal(shape=(st[i],        ), mean=0, stddev=1                   ) for i in range(1, len(st))]
@@ -56,7 +46,11 @@ def forward(input):
 # Produce n observations with or without a random correlation structure.
 xs = tf.random.normal(shape=(n, vars))
 
-# forward correlation structure (optional).
+# Correlation structure (optional).
+# The camera ready version might report on the "Cholesky decomposition" (if we did not remove it), 
+# but this is not the case for the data and simulation deployed with this package.
+# The matrix used here is less contained, which should not be a problem.
+# Cholesky decomposition could have been possible too to simulate the correlation structure.
 if correlation:
     sigma = np.random.normal(0, 1, (vars, vars))
     sigma = np.dot(sigma, sigma.T)
@@ -97,7 +91,6 @@ np.random.shuffle(methods)
 id = str(uuid.uuid4())
 
 # turns into tf
-
 xs_tf = tf.constant(xs, dtype=tf.float32)
 ys_tf = tf.constant(ys, dtype=tf.float32)
 
@@ -108,10 +101,6 @@ for sampling in methods:
 
     for iteration in range(0, iterations):
         print("iteration " + str(iteration) + " with " + str(len(observations)) + " (" + sampling + ")")
-        
-        #Print postive fraction in obversations and in population.
-        # print("Positive fraction in observations: " + str(sum(ys[observations] == 1) / len(observations)))
-        # print("Positive fraction in population: " + str(sum(ys == 1) / n))
         
         record = dict()
         record["id"] = id
@@ -197,10 +186,10 @@ for sampling in methods:
             f.write(json.dumps(record) + "\n")
 
 
-# s3://vua-data/simulation2/
-aws_s3_bucket = "vua-data"
-aws_s3_path = "simulation2/"
+# # In case aws is used to run and store the results.
+# aws_s3_bucket = "vua-data"
+# aws_s3_path = "simulation2/"
 
-# Use boto to upload the file to S3.
-s3 = boto3.client('s3')
-s3.upload_file(f"sim_{id}.json", aws_s3_bucket, aws_s3_path + f"sim_{id}.json")
+# # Use boto to upload the file to S3.
+# s3 = boto3.client('s3')
+# s3.upload_file(f"sim_{id}.json", aws_s3_bucket, aws_s3_path + f"sim_{id}.json")

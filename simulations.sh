@@ -1,3 +1,4 @@
+# This is used when running the simulations on the server.
 echo "Running simulations..."
 
 cd /home/ubuntu/EASE_2025_active_learning_LLM

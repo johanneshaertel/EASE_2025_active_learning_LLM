@@ -16,7 +16,7 @@ from botocore.exceptions import ClientError
 # -----------------------------------------------------------
 
 input_file = os.path.dirname(__file__) + "/../data/preqa.json"
-output_file = os.path.dirname(__file__) + "/../data/claude_output.json"
+output_file = os.path.dirname(__file__) + "/../data/new_claude_output.json"
 
 urls_done = []
 

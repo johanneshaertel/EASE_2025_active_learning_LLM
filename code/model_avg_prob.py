@@ -1,8 +1,8 @@
-# This code we use to infer the probability bounds of reviews beeing truely related to security defects.
+# This code we use to infer the probability bounds of reviews being truly related to security defects.
 
-# We can only do this on the random data. We only onserverd negatives on such sample, see lables_random. 
-# According to the following model, we can be sure to 95% that the pobability
-# of a reviews beeing related to a security defect is less than 2,88%.
+# We can only do this on the random data. We only observed  negatives on such sample, see random.csv. 
+# According to the following model, we can be sure to 95% that the probability 
+# of a reviews being related to a security defect is less than 2,88%.
 
 import numpy as np
 import matplotlib.pyplot as plt

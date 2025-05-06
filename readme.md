@@ -1,10 +1,18 @@
-# Zip Overview
+# Overview
 
-This material is also be hosted on [https://github.com/johanneshaertel/EASE_2025_active_learning_LLM].
+This material is deployed via [GitHub](https://github.com/johanneshaertel/EASE_2025_active_learning_LLM)
+and [DOI](https://doi.org/10.6084/m9.figshare.28303904)
 
 Welcome to the repository hosting the material for the paper **Improved Labeling of Security Defects in Code Review by Active Learning with LLMs**.
 
-# Core commands to run this.
+# Structure.
+The repository is separated into a code, crawler, data, and paper directory.
+1. Code includes all the main scripts used for processing.
+2. Crawler includes the artifacts that are used for crawling the raw data from GitHub. The code might lose functionality since the GitHub API is a move target.
+3. Data includes all data. If this **If This material comes from GitHub, big files are missing. They can partially be derived. The full material is available over the DOI.**
+4. Paper includes the plots integrated into the paper. They can be re-derived from data using the code.
+
+# Core commands.
 
 The relevant commands are saved in a Makefile. They have been tested on WSL2 Ubuntu. We provide code for training the LLM, application and simulation.
 

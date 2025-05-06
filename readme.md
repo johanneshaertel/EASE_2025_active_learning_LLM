@@ -20,7 +20,7 @@ They have been tested on WSL2 Ubuntu. We provide code for training the LLM, appl
 
 1. `make venv` Install a python virtual environment in the root under .venv used for the code.
 2. `make train` Trains a fresh LLM on the most recent data from data/final.json. The model is saved in data/model.h5
-3. `make apply` Run the trained data/model.h5 (potentially not uploaded since around 500 MB) to the data/reviews.zip (potentially not uploaded since around 500 MB). Candidate selection can be hardcoded into the apply.py easily.
+3. `make apply` Applies the trained data/model.h5 (if it exists) to the data/reviews.zip (if it exists). Candidate selection can be hardcoded into the apply.py easily.
 4. `make simulations` runs a single simulation.
 
 # The raw reviews (data/reviews.zip)

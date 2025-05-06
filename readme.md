@@ -59,10 +59,10 @@ A prototypical record of the simulation is the following:
 | `n_neg`                | Number of negative samples in the dataset.                                      | 986193                     |
 | `balance`             | Ratio shift parameter (not equal to exact balance)                                          | 0.99                       |
 | `sampling`             | Sampling method used (e.g., random).                                            | random                     |
-| `increment`            | Incremental step size for sampling.                                             | 200                        |
+| `increment`            | Incremental step size for active learning.                                             | 200                        |
 | `iteration`            | Current iteration of the simulation.                                            | 0                          |
 | `correlation`          | Whether correlation is considered in the simulation (`True` or `False`).        | True                       |
-| `logit_stdev`          | Standard deviation of the logistic regression model.                            | 0.7                        |
+| `logit_stdev`          | Standard deviation of the logits (label predictability).                            | 0.7                        |
 | `epochs`               | Number of epochs used for training.                                             | 5                          |
 | `loss_full_dataset`    | Loss value calculated on the full dataset.                                      | 0.19277027249336243        |
 | `n_obs`                | Number of observations in the current sample.                                   | 200                        |

@@ -4,6 +4,7 @@ import keras as keras
 import json
 import boto3
 import uuid
+import os
 
 # Simulation.
 vars = 20
@@ -11,8 +12,11 @@ vars = 20
 # Number of observations.
 n = 1000000
 
+script_dir = os.path.dirname(os.path.abspath(__file__)) + "/"
+sim_dir = script_dir + "../data/simulation/"
+
 # Balance.
-ballance = 0.99
+balance = 0.99
 
 logit_stdev = np.random.choice([0.7, 1.0, 1.3])
 
@@ -60,7 +64,7 @@ if correlation:
 std = np.std(forward(xs).numpy())
 ws[-1] = ws[-1] / std
 ws[-1] = ws[-1] * logit_stdev
-mean_adj = np.mean(forward(xs).numpy()) - np.log((1 - ballance) / ballance)
+mean_adj = np.mean(forward(xs).numpy()) - np.log((1 - balance) / balance)
 bs[-1] = tf.constant(float(-mean_adj), shape=(1,))
 
 probability = tf.sigmoid(forward(xs))
@@ -108,7 +112,7 @@ for sampling in methods:
         record["n"] = n
         record["n_pos"] = n_pos
         record["n_neg"] = n_neg
-        record["ballance"] = ballance
+        record["balance"] = balance
         record["sampling"] = sampling
         record["increment"] = increment
         record["iteration"] = iteration
@@ -182,14 +186,14 @@ for sampling in methods:
         # Map record values to jsons serializable types.
         record = {k: str(v) for k, v in record.items()}
 
-        with open(f"sim_{id}.json", 'a') as f:
+        with open(sim_dir + f"sim_{id}.json", 'a') as f:
             f.write(json.dumps(record) + "\n")
 
 
-# # In case aws is used to run and store the results.
+# # In the case that AWS is used to run and store the results, use this:
 # aws_s3_bucket = "vua-data"
 # aws_s3_path = "simulation2/"
 
 # # Use boto to upload the file to S3.
 # s3 = boto3.client('s3')
-# s3.upload_file(f"sim_{id}.json", aws_s3_bucket, aws_s3_path + f"sim_{id}.json")
+# s3.upload_file(sim_dir + f"sim_{id}.json", aws_s3_bucket, aws_s3_path + f"sim_{id}.json")

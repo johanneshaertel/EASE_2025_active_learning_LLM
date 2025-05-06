@@ -1,8 +1,8 @@
 SHELL=/bin/bash
 
-# Produce the zip uploade on DOI: 
+# Produce the zip uploade on DOI:
 material.zip:
-	zip -r material.zip code data readme.md requirements.txt Makefile LICENSE .gitignore
+	zip -r material.zip code data crawler paper readme.md requirements.txt Makefile LICENSE .gitignore
 
 # Install the venv. Depending on the mashine, one my need to adjust the requirements.txt file.
 venv:
